@@ -1,0 +1,39 @@
+version: '3'
+services:
+  orborous:
+    image: ghcr.io/shuffle/shuffle-orborus:1.3.0
+    container_name: shuffle-orborus
+    hostname: shuffle-orborus
+    networks:
+      - shuffle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - SHUFFLE_APP_SDK_VERSION=1.3.1
+      - SHUFFLE_WORKER_VERSION=latest
+      - ORG_ID=${ORG_ID}
+      - ENVIRONMENT_NAME=${ENVIRONMENT_NAME}
+      - BASE_URL=http://10.13.1.165:5001
+      - DOCKER_API_VERSION=1.40
+      - HTTP_PROXY=${SHUFFLE_HTTP_PROXY}
+      - HTTPS_PROXY=${SHUFFLE_HTTPS_PROXY}
+      - SHUFFLE_PASS_WORKER_PROXY=${SHUFFLE_PASS_WORKER_PROXY}
+      - SHUFFLE_ORBORUS_EXECUTION_TIMEOUT=120
+      - SHUFFLE_ORBORUS_EXECUTION_CONCURRENCY=5
+      - SHUFFLE_BASE_IMAGE_NAME=${SHUFFLE_BASE_IMAGE_NAME}
+      - SHUFFLE_BASE_IMAGE_REGISTRY=${SHUFFLE_BASE_IMAGE_REGISTRY}
+      - SHUFFLE_BASE_IMAGE_TAG_SUFFIX=${SHUFFLE_BASE_IMAGE_TAG_SUFFIX}
+      - CLEANUP=false
+      - SHUFFLE_WORKER_IMAGE=ghcr.io/shuffle/shuffle-worker:latest
+        #- SHUFFLE_WORKER_IMAGE=ghcr.io/shuffle/shuffle-worker-scale:latest
+
+      - SHUFFLE_WORKER_SERVER_URL=http://shuffle-workers
+      - SHUFFLE_SCALE_REPLICAS=1
+      - SHUFFLE_SWARM_CONFIG=run
+      - SHUFFLE_SWARM_NETWORK_NAME=shuffle_swarm_executions
+      - SHUFFLE_LOGS_DISABLED=true
+
+    restart: unless-stopped
+networks:
+  shuffle:
+    driver: bridge
